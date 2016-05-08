@@ -7,10 +7,10 @@ import mcpi.block as block
 import time
 import random
 
-screenBottomLeft = minecraft.Vec3(-30,4,15)
-screenTopRight = minecraft.Vec3(10,24,15)
-playingBottomLeft = minecraft.Vec3(-30, 4, 14)
-playingTopRight = minecraft.Vec3(10, 24, 14)
+screenBottomLeft = minecraft.Vec3(-30,14,15)
+screenTopRight = minecraft.Vec3(10,34,15)
+playingBottomLeft = minecraft.Vec3(-30, 14, 14)
+playingTopRight = minecraft.Vec3(10, 34, 14)
 
 birdX = .4
 birdStartY = .5
@@ -99,8 +99,6 @@ def drawVerticalOutline(mc, x0, y0, x1, y1, z, blockType, blockData=0):
 
 if __name__ == "__main__":
 	#constants
-	upControl = minecraft.Vec3(-10, 19, -9)
-	middleControl = minecraft.Vec3(-10, 20, -10)
 
 	mc = minecraft.Minecraft.create()
 
@@ -111,16 +109,11 @@ if __name__ == "__main__":
 	mc.setBlocks(playingBottomLeft.x, playingBottomLeft.y, playingBottomLeft.z, playingTopRight.x, playingTopRight.y, playingTopRight.z, block.AIR)
 	drawVerticalOutline(mc, playingBottomLeft.x, playingBottomLeft.y, playingTopRight.x, playingTopRight.y, playingTopRight.z, block.OBSIDIAN)
 
-	# create control buttons
-	mc.setBlock(upControl.x, upControl.y, upControl.z, block.DIAMOND_BLOCK)
-	# blocks around control buttons, to stop player moving off buttons
-	mc.setBlock(middleControl.x + 1,middleControl.y + 1,middleControl.z, block.GLASS)
-	mc.setBlock(middleControl.x - 1,middleControl.y + 1,middleControl.z, block.GLASS)
-	mc.setBlock(middleControl.x,middleControl.y + 1,middleControl.z + 2, block.GLASS)
-	mc.setBlock(middleControl.x,middleControl.y + 1,middleControl.z - 1, block.GLASS)
-	mc.setBlock(middleControl.x,middleControl.y - 1,middleControl.z, block.STONE)
-	# put player in the middle of the control
-	mc.player.setPos(middleControl.x + 0.5,middleControl.y,middleControl.z + 0,5)
+	# create control set
+	middleControl = minecraft.Vec3(-10, 5, -10)
+	mc.setBlock(middleControl.x,middleControl.y,middleControl.z, block.STONE)
+	mc.setBlock(middleControl.x,middleControl.y + 2,middleControl.z + 1, block.GLASS)
+	mc.player.setPos(middleControl.x+0.5,middleControl.y+1,middleControl.z-0.1)
 
 	# Set up field & bird
 	field = Field(mc, playingBottomLeft, playingTopRight)
@@ -131,10 +124,9 @@ if __name__ == "__main__":
 	try:
 		#loop until game over
 		while playing == True:
+			# mc.events.clearAll()
 			time.sleep(0.3)
 			field.move()
-			playerTilePos = mc.player.getTilePos()
-			playerTilePos.y = playerTilePos.y - 1
-			playing = bird.move(matchVec3(playerTilePos, upControl) == True) # TODO create controls, pass in whether the bird should move up
+			playing = bird.move(mc.events.pollBlockHits())
 	except KeyboardInterrupt:
 		print "stopped"

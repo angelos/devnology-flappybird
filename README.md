@@ -9,4 +9,4 @@ This is a preparation for [2016-05-10's Devnology Code Fest: Flappy Bird](http:/
 ## How?
 Follow the instructions of [raspberryjammod](https://github.com/arpruss/raspberryjammod) to install a suitable Minecraft, Forge, and raspberryjammod. Then, drop `fb.py` into the `mcpipy` directory in your `minecraft` folder, and run the script in Minecraft using `/python fb.py`.
 
-You can now play the game by either "pressing" the button in front of you by walking on it, or backing off. Don't worry, there are glass blocks around you, so you won't fall.
+You can move the bird up by right-clicking the glass block in front of you, using a sword.
