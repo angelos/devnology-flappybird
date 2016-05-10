@@ -85,12 +85,6 @@ class Bird:
 		return False
 
 
-def matchVec3(vec1, vec2):
-	if ((vec1.x == vec2.x) and (vec1.y == vec2.y) and (vec1.z == vec2.z)):
-		return True
-	else:
-		return False
-
 def drawVerticalOutline(mc, x0, y0, x1, y1, z, blockType, blockData=0):
 	mc.setBlocks(x0, y0, z, x0, y1, z, blockType, blockData)
 	mc.setBlocks(x0, y1, z, x1, y1, z, blockType, blockData)
@@ -98,8 +92,6 @@ def drawVerticalOutline(mc, x0, y0, x1, y1, z, blockType, blockData=0):
 	mc.setBlocks(x1, y0, z, x0, y0, z, blockType, blockData)
 
 if __name__ == "__main__":
-	#constants
-
 	mc = minecraft.Minecraft.create()
 
 	# Draw an ugly board
@@ -110,10 +102,10 @@ if __name__ == "__main__":
 	drawVerticalOutline(mc, playingBottomLeft.x, playingBottomLeft.y, playingTopRight.x, playingTopRight.y, playingTopRight.z, block.OBSIDIAN)
 
 	# create control set
-	middleControl = minecraft.Vec3(-10, 5, -10)
-	mc.setBlock(middleControl.x,middleControl.y,middleControl.z, block.STONE)
-	mc.setBlock(middleControl.x,middleControl.y + 2,middleControl.z + 1, block.GLASS)
-	mc.player.setPos(middleControl.x+0.5,middleControl.y+1,middleControl.z-0.1)
+	control = minecraft.Vec3(-10, 5, -10)
+	mc.setBlock(control.x,control.y,control.z, block.STONE)
+	mc.setBlock(control.x,control.y + 2,control.z + 1, block.GLASS)
+	mc.player.setPos(control.x+0.5,control.y+1,control.z-0.1)
 
 	# Set up field & bird
 	field = Field(mc, playingBottomLeft, playingTopRight)
@@ -124,7 +116,6 @@ if __name__ == "__main__":
 	try:
 		#loop until game over
 		while playing == True:
-			# mc.events.clearAll()
 			time.sleep(0.3)
 			field.move()
 			playing = bird.move(mc.events.pollBlockHits())
