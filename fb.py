@@ -37,10 +37,12 @@ class Field:
 		self.mc.setBlocks(self.bottomLeft.x + 1, self.topRight.y - fieldHeight + start + 1, self.topRight.z, self.bottomLeft.x + 1, self.topRight.y - fieldHeight + end, self.topRight.z, block.DIAMOND_BLOCK)
 
 	def move(self):
+		# Move everything to the left
 		for x in range(self.topRight.x - 1, self.bottomLeft.x + 1, -1):
 			self.moveColumnLeft(x, self.bottomLeft.y + 1, self.topRight.y, self.bottomLeft.z)
 		# And clear final column, until we need a new pipe
 		self.mc.setBlocks(self.bottomLeft.x + 1, self.topRight.y - 1, self.topRight.z, self.bottomLeft.x + 1, self.bottomLeft.y + 1, self.topRight.z, block.AIR)
+		# Create a new pipe when we have traveled pipeDistance
 		self.pipeCounter += 1
 		if self.pipeCounter % pipeDistance == 0:
 			self.createRandomPipe()
@@ -54,8 +56,7 @@ class Field:
 class Bird:
 	def __init__(self, mc, bottomLeft, topRight):
 		self.mc = mc
-		self.bottomLeft = bottomLeft
-		self.topRight = topRight
+		self.z = bottomLeft.z
 		self.x = topRight.x + birdX * (bottomLeft.x - topRight.x)
 		self.y = topRight.y + birdStartY * (bottomLeft.y - topRight.y)
 
@@ -70,16 +71,16 @@ class Bird:
 		return keepPlaying
 
 	def remove(self):
-		self.mc.setBlock(self.x, self.y, self.bottomLeft.z, block.AIR)
+		self.mc.setBlock(self.x, self.y, self.z, block.AIR)
 
 	def draw(self):
-		self.mc.setBlock(self.x, self.y, self.bottomLeft.z, block.GLOWING_OBSIDIAN)
+		self.mc.setBlock(self.x, self.y, self.z, block.GLOWING_OBSIDIAN)
 
 	def detectCollision(self):
-		if self.y <= self.bottomLeft.y + 1 or self.y >= self.topRight.y - 1:
+		if self.mc.getBlock(self.x, self.y, self.z) == block.OBSIDIAN.id:
 			self.mc.postToChat("Hit edge of field, died.")
 			return True
-		elif self.mc.getBlock(self.x, self.y, self.bottomLeft.z) == block.DIAMOND_BLOCK.id:
+		elif self.mc.getBlock(self.x, self.y, self.z) == block.DIAMOND_BLOCK.id:
 			self.mc.postToChat("Hit pipe, died.")
 			return True
 		return False
